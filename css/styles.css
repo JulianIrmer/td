@@ -1,0 +1,46 @@
+.container {
+    position: absolute;
+    left: 600px;
+    padding: 10px;
+}
+
+.hp-container {
+    position: absolute;
+    top: 600px;
+    /* left: 0; */
+}
+
+.hp-bar-green {
+    position: absolute;
+    position: absolute;
+    height: 25px;
+    width: 600px;
+    background-color: green;
+    z-index: 2;
+}
+
+.hp-bar-red {
+    position: absolute;
+    height: 25px;
+    width: 600px;
+    background-color: red;
+}
+
+.current-hp {
+    z-index: 3;
+    position: absolute;
+    left: 200px;
+}
+
+.separator {
+    z-index: 3;
+    position: absolute;
+    left: 250px
+}
+
+.max-hp {
+    z-index: 3;
+    position: absolute;
+    left: 280px;
+}
+

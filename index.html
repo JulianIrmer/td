@@ -5,12 +5,33 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TD</title>
+    <link rel="stylesheet" href="./css/styles.css">
 </head>
 <body>
+
+    <div class="container">
+        <div class="money"></div>
+        <button class="stat-box" data-attribute="dmg"></button>
+        <button class="stat-box" data-attribute="as"></button>
+        <button class="stat-box" data-attribute="hp"></button>
+        <button class="stat-box" data-attribute="ls"></button>
+        <button class="stat-box" data-attribute="absProts"></button>
+        <button class="stat-box" data-attribute="percentProts"></button>
+        <button class="stat-box" data-attribute="range"></button>
+    </div>
+    <div class="hp-container">
+        <div class="hp-bar-green"></div>
+        <div class="hp-bar-red"></div>
+        <span class="current-hp"></span>
+        <span class="separator">/</span>
+        <span class="max-hp"></span>
+    </div>
     <script src="./js/helper.js"></script>
+    <script src="./js/player.js"></script>
+    <script src="./js/menu.js"></script>
     <script src="./js/projectile.js"></script>
     <script src="./js/enemy.js"></script>
-    <script src="./js/wave.js"></script>
+    <script src="./js/bla.js"></script>
     <script src="./js/weapon.js"></script>
     <script src="./js/tower.js"></script>
     <script src="./js/main.js"></script>

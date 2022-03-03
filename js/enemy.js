@@ -1,12 +1,17 @@
 class Enemy {
-    constructor(windowWidth, windowHeight, tower, index) {
+    constructor(windowWidth, windowHeight, tower, index, UI, iteration) {
         this.index = index;
         this.orderNumber;
-        this.hp = 1;
-        this.dmg = 1;
+        this.hp = 20;
+        this.baseDmg = 2;
+        console.log(iteration);
+        this.iteration = iteration;
+        this.dmg = this.baseDmg + (this.iteration * 0.5);
         this.vel = createVector();
         this.acc = createVector();
         this.as = 0.5;
+        this.tower = tower;
+        this.UI = UI;
         this.towerX = windowWidth / 2;
         this.towerY = windowHeight / 2;
         this.windowWidth = windowWidth;
@@ -16,6 +21,11 @@ class Enemy {
         this.towerRange = tower.getRange();
         this.distanceToTower = this.getDistance();
         this.Helper = new Helper();
+        this.value = 1;
+    }
+
+    calculateDmg(iteration) {
+        return ;
     }
 
     createPos() {
@@ -65,7 +75,7 @@ class Enemy {
     move() {
         const offset = tower.getDiameter() - 6;
         if (this.Helper.isIntersecting(this, tower, offset)) {
-            // this.attack();
+            this.attack(frameCount);
             return;
         } else {
             const diseredPos = p5.Vector.sub(this.towerPos, this.pos);
@@ -77,10 +87,11 @@ class Enemy {
         }
     }
 
-    attack() {
-        setInterval(() => {
-            console.log('attack');
-        }, this.as * 20000);
+    attack(fCount) {
+        const offset = Math.floor(random(4, 8));
+        if (fCount % (60 - offset) !== 0) return;
+        this.tower.decreaseCurrentHp(this.getDmg());
+        this.UI.updateHpBar();
     }
 
     isDead() {
@@ -89,16 +100,15 @@ class Enemy {
     }
 
     applyDmg() {
-        if (this.isDead()) {
-            return;
-        } else {
-            this.hp -= tower.getDmg();
-        }
+        if (this.isDead()) return;
+        this.hp -= tower.getDmg();
     }
 
+    getDmg() {return this.dmg}
     getPosition() {return this.pos}
     getIndex() {return this.index}
     getDistance() {return this.pos.dist(this.towerPos)}
+    getValue() {return this.value}
 
     setOrderNumber(index) {this.orderNumber = index}
 }

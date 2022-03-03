@@ -1,33 +1,49 @@
 class Projectile {
-    constructor() {
+    constructor(windowWidth, windowHeight) {
         this.target = null;
-        this.pos = createVector(300, 300);
-        this.vel = createVector();
-        this.acc = createVector();
+        this.pos = createVector(windowWidth / 2, windowHeight / 2);
+        this.vel = createVector(0, 0);
+        this.acc = createVector(0, 0);
         this.Helper = new Helper();
+        this.maxSpeed = 10;
+        this.maxForce = 2;
+        this.r = 2;
+    }
+
+    seek() {
+        let force = p5.Vector.sub(this.target.getPosition(), this.pos);
+        force.setMag(this.maxSpeed);
+        force.sub(this.vel);
+        force.limit(this.maxForce);
+        this.applyForce(force);
+    }
+
+    applyForce(force) {
+        this.acc.add(force);
+    }
+
+    update() {
+        this.vel.add(this.acc);
+        this.vel.limit(this.maxSpeed);
+        this.pos.add(this.vel);
+        this.acc.set(0, 0);
     }
 
     show() {
-        ellipse(this.pos.x, this.pos.y, 3);
-        fill(255);
+        push();
         stroke(255);
-    }
-
-    move() {
-        const diseredPos = p5.Vector.sub(this.target.getPosition(), this.pos);
-        diseredPos.setMag(5);
-        const steer = p5.Vector.sub(diseredPos, this.vel);
-        this.acc.add(steer);
-        this.pos.add(this.vel);
-        this.vel.add(this.acc);
+        strokeWeight(2);
+        fill(255);
+        ellipse(this.pos.x, this.pos.y, this.r);
+        pop();
     }
 
     isTargetHit() {
-        if (this.Helper.isIntersecting(this, this.target, 0)) return true;
+        if (this.Helper.isIntersecting(this, this.target, 15)) return true;
         return false;
     }
 
-    getCurrentTarget() {
+    getTarget() {
         return this.target;
     }
 

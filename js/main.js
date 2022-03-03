@@ -1,35 +1,26 @@
 const windowWidth = 600;
 const windowHeight = 600;
 const cHelper = new Helper();
+let UI;
+let PlayerClass;
 let tower;
+let bla;
 let enemies = [];
 let projectiles = [];
-const firedProjectiles = [];
+let targetedProjectiles = [];
+let iteration = 10;
+
 
 function setup() {
-    frameRate(4);
     createCanvas(windowWidth, windowHeight);
-    createProjectiles();
-    tower = new Tower(windowWidth, windowHeight, projectiles);
-    createEnemies();
-}
+    tower = new Tower(windowWidth, windowHeight);
+    PlayerClass = new Player();
+    UI = new Menu(tower, PlayerClass);
+    bla = new Bla(iteration, windowWidth, windowHeight, tower, UI);
+    enemies = bla.getEnemyArray();
 
-function createProjectiles() {
-    for (let i = 0; i < 500; i++) {
-        projectiles.push(new Projectile());
-    }
-}
-
-function createEnemies() {
-    for (let i = 0; i < 40; i++) {
-        const enemy = new Enemy(windowWidth, windowHeight, tower, i);
-        enemies.push(enemy);
-    }
-
-    enemies = enemies.sort((a, b) => a.getDistance() - b.getDistance());
-
-    for (let i = 0; i < enemies.length; i++) {
-        enemies[i].setOrderNumber(i);
+    for (let i = 0; i < 1000; i++) {
+        projectiles.push(new Projectile(windowWidth, windowHeight));
     }
 }
 
@@ -38,44 +29,69 @@ function draw() {
     tower.show(windowWidth, windowHeight);
     handleEnemies();
     handleBallistics();
+
+    if (enemies.length === 0) {
+        iteration++;
+        spawnNewWave();
+    }
+}
+
+function spawnNewWave() {
+    noLoop();
+    setTimeout(() => {
+        bla = new Bla(iteration, windowWidth, windowHeight, tower, UI);
+        enemies = bla.getEnemyArray();
+        loop();
+    }, 1000);
 }
 
 function handleBallistics() {
-    if (enemies.length === 0) return;
-    for (let i = 0; i <= tower.getSimultaneouslyTargets(); i++) {
-        if (!enemies[i]) continue;
+    if (frameCount % tower.calculateAttackSpeed() === 0) {
+        addNewTargets();
+    }
+    updateExistingProjectiles();
+}
 
-        const currentTarget = enemies[i];
-        const returnedProjectile = tower.fire(enemies[i]);
-        if (returnedProjectile) {
-            firedProjectiles.push(returnedProjectile);
+function addNewTargets() {
+    for (let i = 0; i < enemies.length; i++) {
+        const enemy = enemies[i];
+
+        if (!tower.isEnemyInRange(enemy)) continue;
+        if (i <= tower.getSimultaneouslyTargets()) {
+            const projectile = projectiles[enemy.index];
+            projectile.setTarget(enemy);
+            targetedProjectiles.push(projectile);
         }
+    }
+}
 
-        for (let projectile of firedProjectiles) {
-            if (!projectile.getCurrentTarget()) {
-                console.log(currentTarget);
-                projectile.setTarget(currentTarget);
-            }
+function updateExistingProjectiles() {
+    for (let i = targetedProjectiles.length - 1; i > 0; i--) {
+        const projectile = targetedProjectiles[i];
 
+        if (!projectile.isTargetHit()) {
+            projectile.seek();
+            projectile.update();
             projectile.show();
-            projectile.move();
-
-            if (!projectile.isTargetHit()) continue;
-
-            enemy.applyDmg(tower.getDmg());
-            projectile.setPosition(0, 0);
-            projectile.setTarget(null);
+        } else if (projectile.isTargetHit()) {
+            const target = projectile.getTarget();
+            target.applyDmg();
+            tower.applyLs();
+            UI.updateHpBar();
+            projectiles[target.index] = new Projectile(windowWidth, windowHeight);
         }
     }
 }
 
 function handleEnemies() {
-    for (let i = enemies.length - 1; i >= 1 ; i--) {
+    for (let i = enemies.length - 1; i >= 0 ; i--) {
         const enemy = enemies[i]
         enemy.show();
-        enemy.move();
+        enemy.move(frameCount);
 
         if (enemy.isDead()) {
+            PlayerClass.increaseMoney(enemy.getValue());
+            UI.updateStats();
             enemies.splice(i, 1);
         }
     }
