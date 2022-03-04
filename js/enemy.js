@@ -21,6 +21,9 @@ class Enemy {
         this.towerRange = tower.getRange();
         this.distanceToTower = this.getDistance();
         this.value = value;
+        this.color = 'blue';
+        this.r = 5;
+        this.maxSpeed = 3;
     }
 
     calculateDmg(iteration) {
@@ -45,10 +48,10 @@ class Enemy {
     }
 
     show() {
-        stroke('blue');
-        fill('blue');
+        stroke(this.color);
+        fill(this.color);
         rectMode(CENTER);
-        rect(this.pos.x, this.pos.y, 5, 5);
+        rect(this.pos.x, this.pos.y, this.r, this.r);
     }
 
     move() {
@@ -58,9 +61,10 @@ class Enemy {
             return;
         } else {
             const diseredPos = p5.Vector.sub(this.towerPos, this.pos);
-            diseredPos.setMag(4);
+            diseredPos.setMag(this.maxSpeed);
             const steer = p5.Vector.sub(diseredPos, this.vel);
             this.acc.add(steer);
+            this.acc.limit(1);
             this.pos.add(this.vel);
             this.vel.add(this.acc);
         }
@@ -81,6 +85,11 @@ class Enemy {
     applyDmg() {
         if (this.isDead()) return;
         this.hp -= tower.getDmg();
+    }
+
+    calcTimeToTower() {
+        const t = this.getDistance() / this.maxSpeed;
+        return t;
     }
 
     getDmg() {return this.dmg}
