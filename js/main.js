@@ -4,20 +4,19 @@ const cHelper = new Helper();
 let UI;
 let PlayerClass;
 let tower;
-let bla;
+let level;
 let enemies = [];
 let projectiles = [];
 let targetedProjectiles = [];
-let iteration = 10;
-
+let iteration = 1;
 
 function setup() {
     createCanvas(windowWidth, windowHeight);
     tower = new Tower(windowWidth, windowHeight);
     PlayerClass = new Player();
-    UI = new Menu(tower, PlayerClass);
-    bla = new Bla(iteration, windowWidth, windowHeight, tower, UI);
-    enemies = bla.getEnemyArray();
+    UI = new Ui(tower, PlayerClass);
+    level = new Level(iteration, windowWidth, windowHeight, tower, UI);
+    enemies = level.getEnemyArray();
 
     for (let i = 0; i < 1000; i++) {
         projectiles.push(new Projectile(windowWidth, windowHeight));
@@ -25,22 +24,23 @@ function setup() {
 }
 
 function draw() {
+    if (enemies.length === 0) {
+        iteration++;
+        spawnNewWave();
+        targetedProjectiles.length = 0;
+    }
+
     background(20);
     tower.show(windowWidth, windowHeight);
     handleEnemies();
     handleBallistics();
-
-    if (enemies.length === 0) {
-        iteration++;
-        spawnNewWave();
-    }
 }
 
 function spawnNewWave() {
     noLoop();
+    level = new Level(iteration, windowWidth, windowHeight, tower, UI);
+    enemies = level.getEnemyArray();
     setTimeout(() => {
-        bla = new Bla(iteration, windowWidth, windowHeight, tower, UI);
-        enemies = bla.getEnemyArray();
         loop();
     }, 1000);
 }
@@ -50,6 +50,16 @@ function handleBallistics() {
         addNewTargets();
     }
     updateExistingProjectiles();
+}
+
+function isTowerShooting() {
+    for (let i = 0; i < targetedProjectiles.length; i++) {
+        if (targetedProjectiles[i].getTarget() === null) {
+            break;
+            return false;
+        }
+    }
+    return true;
 }
 
 function addNewTargets() {
@@ -76,9 +86,14 @@ function updateExistingProjectiles() {
         } else if (projectile.isTargetHit()) {
             const target = projectile.getTarget();
             target.applyDmg();
-            tower.applyLs();
             UI.updateHpBar();
+
+            projectiles[target.index].setTarget(null);
+            projectiles[target.index].hide();
             projectiles[target.index] = new Projectile(windowWidth, windowHeight);
+            tower.applyLs();
+
+            targetedProjectiles.splice(i, 1);
         }
     }
 }
@@ -91,7 +106,7 @@ function handleEnemies() {
 
         if (enemy.isDead()) {
             PlayerClass.increaseMoney(enemy.getValue());
-            UI.updateStats();
+            UI.updateMoney();
             enemies.splice(i, 1);
         }
     }

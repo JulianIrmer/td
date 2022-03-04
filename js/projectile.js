@@ -11,6 +11,7 @@ class Projectile {
     }
 
     seek() {
+        if (!this.target) return;
         let force = p5.Vector.sub(this.target.getPosition(), this.pos);
         force.setMag(this.maxSpeed);
         force.sub(this.vel);
@@ -23,6 +24,7 @@ class Projectile {
     }
 
     update() {
+        if (!this.target) return;
         this.vel.add(this.acc);
         this.vel.limit(this.maxSpeed);
         this.pos.add(this.vel);
@@ -38,7 +40,14 @@ class Projectile {
         pop();
     }
 
+    hide() {
+        this.r = 0;
+        this.pos.y = -100;
+        this.pos.x = -100;
+    }
+
     isTargetHit() {
+        if (!this.target) return false;
         if (this.Helper.isIntersecting(this, this.target, 15)) return true;
         return false;
     }

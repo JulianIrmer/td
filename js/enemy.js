@@ -1,17 +1,17 @@
 class Enemy {
-    constructor(windowWidth, windowHeight, tower, index, UI, iteration) {
+    constructor(windowWidth, windowHeight, tower, index, UI, iteration, dmg, hp, value) {
+        this.math = new Calculations();
+        this.Helper = new Helper();
+        this.UI = UI;
         this.index = index;
         this.orderNumber;
-        this.hp = 20;
-        this.baseDmg = 2;
-        console.log(iteration);
         this.iteration = iteration;
-        this.dmg = this.baseDmg + (this.iteration * 0.5);
+        this.dmg = dmg;
+        this.hp = hp;
         this.vel = createVector();
         this.acc = createVector();
         this.as = 0.5;
         this.tower = tower;
-        this.UI = UI;
         this.towerX = windowWidth / 2;
         this.towerY = windowHeight / 2;
         this.windowWidth = windowWidth;
@@ -20,8 +20,7 @@ class Enemy {
         this.towerPos = tower.getPosition();
         this.towerRange = tower.getRange();
         this.distanceToTower = this.getDistance();
-        this.Helper = new Helper();
-        this.value = 1;
+        this.value = value;
     }
 
     calculateDmg(iteration) {
@@ -37,32 +36,12 @@ class Enemy {
     }
 
     generateCoords() {
-        const coords = {
-            minX: null,
-            maxX: null,
-            minY: null,
-            maxY: null
-        }
-
-        while(!(coords.minX && coords.maxX && coords.minY && coords.maxY)) {
-            let minX = random(-this.windowWidth * 2, this.windowWidth * 2);
-            let maxX = random(-this.windowWidth * 2, this.windowWidth * 2);
-            let minY = random(-this.windowHeight * 2, this.windowHeight * 2);
-            let maxY = random(-this.windowHeight * 2, this.windowHeight * 2);
-            coords.minX = this.isInView(minX) ? null : minX;
-            coords.maxX = this.isInView(maxX) ? null : maxX;
-            coords.minY = this.isInView(minY) ? null : minY;
-            coords.maxY = this.isInView(maxY) ? null : maxY;
-        }
-
-        return coords;
-    }
-
-    isInView(coord, widthOrHeight) {
-        if (coord > 0 && coord < widthOrHeight) {
-            return true;
-        }
-        return false;
+        return {
+            minX: random(-4000, -1000),
+            maxX: random(1000, 4000),
+            minY: random(-4000, 1000),
+            maxY: random(1000, 4000)
+        };
     }
 
     show() {
@@ -105,10 +84,19 @@ class Enemy {
     }
 
     getDmg() {return this.dmg}
+    getHp() {return this.hp}
+    getValue() {return this.value}
     getPosition() {return this.pos}
     getIndex() {return this.index}
     getDistance() {return this.pos.dist(this.towerPos)}
     getValue() {return this.value}
+    getAttributeObject() {
+        return {
+            hp: this.getHp(),
+            dmg: this.getDmg(),
+            value: this.getValue()
+        }
+    }
 
     setOrderNumber(index) {this.orderNumber = index}
 }

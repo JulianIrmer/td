@@ -31,7 +31,7 @@ class Tower {
     }
 
     calculateAttackSpeed() {
-        const as = Math.floor(400 / this.as);
+        const as = round(400 / this.as);
         return as;
     }
 
@@ -64,7 +64,7 @@ class Tower {
         }
         if (attr === 'ls') {
             if (this.getLs() === 1.1) return;
-            this.setLs(this.getLs() + 0.02);
+            this.setLs(this.getLs() + 0.002);
             return;
         }
         if (attr === 'range') {
@@ -92,7 +92,6 @@ class Tower {
 
     endGame() {
         noLoop();
-        alert('You lost');
     }
 
     increaseCurrentHp(hp) {
@@ -118,8 +117,8 @@ class Tower {
     }
 
 // GETTER
-    getCurrentHp() {return this.currentHp}
-    getMaxHp() {return this.maxHp}
+    getCurrentHp() {return round(this.currentHp, 2)}
+    getMaxHp() {return round(this.maxHp, 2)}
     getDmg() {return this.dmg}
     getAs() {return this.as}
     getRange() {return this.range}
