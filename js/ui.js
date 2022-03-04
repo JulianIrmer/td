@@ -59,7 +59,7 @@ class Ui {
     updateCostAndLevel(attr) {
         const button = document.querySelector(`button[data-attribute="${attr}"]`);
         let {level, cost} = button.dataset;
-        const newCost = this.Calc.calcUpgradeCostPerLevel(+level, cost);
+        const newCost = this.Calc.calcUpgradeCostPerLevel(+level, cost, attr);
         button.dataset.cost = newCost;
         const newLevel = +level + 1;
         button.dataset.level = newLevel;
@@ -89,5 +89,13 @@ class Ui {
     updateWaveCounter(iteration) {
         const element = document.querySelector('.wave > h4');
         element.innerText = `Wave ${iteration}`;
+    }
+
+    updateEnemyCounter(counter) {
+        const level = getLevelInstance();
+        const element = document.querySelector('.remaining-enemies');
+        const maxEnemies = level.getEnemyAmount();
+        const currentEnemies = maxEnemies - counter;
+        element.innerText = `${currentEnemies} / ${maxEnemies}`;
     }
 }

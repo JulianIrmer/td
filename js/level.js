@@ -5,25 +5,46 @@ class Level {
         this.windowHeight = windowHeight;
         this.tower = tower;
         this.UI = UI;
+        this.standardDmg;
+        this.standardHp;
+        this.standardValue;
         this.enemyAmount = this.getEnemyAmount();
         this.enemies = this.generateEnemies();
-        this.enemyAttributes = this.enemies[0].getAttributeObject();
+        this.enemyAttributes = this.getStandardStatsForEnemy();
         UI.updateEnemy(this.enemyAttributes);
         UI.updateWaveCounter(iteration);
     }
 
+    getEnemyStatsObject() {
+        const calc = new Calculations();
+        this.standardDmg = calc.calcEnemyAttributePerWave(iteration);
+        this.standardHp = calc.calcEnemyAttributePerWave(iteration);
+        this.standardValue = calc.calcEnemyValuePerWave(iteration);
+
+        return {
+            windowWidth: this.windowWidth,
+            windowHeight: this.windowHeight,
+            tower: this.tower,
+            UI: this.UI,
+            iteration: this.iteration,
+            dmg: this.standardDmg,
+            hp: this.standardHp,
+            value: this.standardValue
+        };
+    }
+
     generateEnemies() {
         let arr = [];
-        const calc = new Calculations();
-        const dmg = calc.calcEnemyAttributePerWave(iteration);
-        const hp = calc.calcEnemyAttributePerWave(iteration);
-        const value = calc.calcEnemyValuePerWave(iteration);
+        const stats = this.getEnemyStatsObject();
         for (let i = 0; i < this.enemyAmount; i++) {
             if (i % 10 === 0) {
-                const enemy = new Boss(this.windowWidth, this.windowHeight, this.tower, i, this.UI, this.iteration, dmg, hp, value);
+                const enemy = new Boss(stats, i);
+                arr.push(enemy);
+            } else if (i % 8 === 0) {
+                const enemy = new Fast(stats, i);
                 arr.push(enemy);
             } else {
-                const enemy = new Enemy(this.windowWidth, this.windowHeight, this.tower, i, this.UI, this.iteration, dmg, hp, value);
+                const enemy = new Enemy(stats, i);
                 arr.push(enemy);
             }
         }
@@ -34,14 +55,23 @@ class Level {
             arr[i].setOrderNumber(i);
         }
 
+
         return arr;
     }
 
+    getStandardStatsForEnemy() {
+        return {
+            dmg: this.standardDmg,
+            hp: this.standardHp,
+            value: this.standardValue
+        }
+    }
+
     getEnemyAmount() {
-        return Math.floor((this.iteration * 1.1) + 50);
+        return Math.floor((this.iteration * 1.1) + 40);
     }
 
     getEnemyArray() {
-        return this.enemies
+        return this.enemies;
     }
 }

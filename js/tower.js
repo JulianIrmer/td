@@ -16,18 +16,16 @@ class Tower {
     }
 
     show() {
+        push();
+        strokeWeight(1);
         noFill();
         stroke('white');
-        push();
         ellipse(this.pos.x, this.pos.y, this.diameter);
-        pop();
-        strokeWeight(2);
 
+        strokeWeight(1);
         stroke('red');
-        push();
         ellipse(this.pos.x, this.pos.y, this.range);
         pop();
-        strokeWeight(0.5);
     }
 
     calculateAttackSpeed() {
@@ -41,10 +39,8 @@ class Tower {
     }
 
     isEnemyInRange(enemy) {
-        const offset = this.diameter + (this.range / 2) - 25;
-        if (this.Helper.isIntersecting(this, enemy, offset)) {
-            return true;
-        }
+        const offset = this.diameter + (this.range / 2) + 15;
+        if (this.Helper.isIntersecting(this, enemy, offset)) return true
         return false;
     }
 
@@ -59,7 +55,7 @@ class Tower {
             return;
         }
         if (attr === 'as') {
-            this.setAs(Math.round((this.as + 0.33) * 100) / 100);
+            this.setAs(Math.round((this.as + 0.5) * 100) / 100);
             return;
         }
         if (attr === 'ls') {
@@ -79,6 +75,11 @@ class Tower {
         if (attr === 'percentProts') {
             if (this.getPercentProts() === 0.5) return;
             this.setPercentProts(this.getPercentProts() - 0.05);
+            return;
+        }
+
+        if (attr === 'targets') {
+            this.getSimultaneouslyTargets(this.getSimultaneouslyTargets() + 1);
             return;
         }
     }
@@ -136,7 +137,8 @@ class Tower {
             range: this.getRange(),
             absProts: this.getAbsProts(),
             percentProts: this.getPercentProts(),
-            ls: this.getLs()
+            ls: this.getLs(),
+            targets: this.getSimultaneouslyTargets(),
         }
     }
 

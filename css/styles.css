@@ -20,6 +20,12 @@ button:hover{
     left: 10px;
 }
 
+.remaining-enemies {
+    position: absolute;
+    top: 40px;
+    left: 10px;
+}
+
 .container {
     position: absolute;
     left: 600px;
@@ -30,7 +36,6 @@ button:hover{
 .hp-container {
     position: absolute;
     top: 600px;
-    /* left: 0; */
 }
 
 .hp-bar-green {

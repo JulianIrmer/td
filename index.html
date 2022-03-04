@@ -10,8 +10,9 @@
 </head>
 <body>
     <div class="wave"><h4>Wave 1</h4></div>
+    <div class="remaining-enemies"></div>
     <div class="container pl-3">
-        <div class="player-stats row g-0 mb-2">
+        <div class="player-stats row g-2 gx-1 mb-2">
             <h4>Player</h4>
             <div class="money col-12"></div>
             <button class="stat-box col-6 h-100 p-0" data-attribute="dmg" data-cost="8" data-level="1"></button>
@@ -21,6 +22,7 @@
             <button class="stat-box col-6 h-100 p-0" data-attribute="absProts" data-cost="8" data-level="1"></button>
             <button class="stat-box col-6 h-100 p-0" data-attribute="percentProts" data-cost="8" data-level="1"></button>
             <button class="stat-box col-6 h-100 p-0" data-attribute="range" data-cost="8" data-level="1"></button>
+            <button class="stat-box col-6 h-100 p-0" data-attribute="targets" data-cost="100" data-level="1"></button>
         </div>
 
         <div class="enemy-stats row g-0">
@@ -43,6 +45,7 @@
     <script src="./js/ui.js"></script>
     <script src="./js/projectile.js"></script>
     <script src="./js/enemy.js"></script>
+    <script src="./js/enemies/fast.js"></script>
     <script src="./js/enemies/boss.js"></script>
     <script src="./js/level.js"></script>
     <script src="./js/weapon.js"></script>

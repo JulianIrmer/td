@@ -9,6 +9,9 @@ let enemies = [];
 let projectiles = [];
 let targetedProjectiles = [];
 let iteration = 1;
+let deadEnemyCounter = 0;
+
+function getLevelInstance() {return level}
 
 function setup() {
     createCanvas(windowWidth, windowHeight);
@@ -16,6 +19,7 @@ function setup() {
     PlayerClass = new Player();
     UI = new Ui(tower, PlayerClass);
     level = new Level(iteration, windowWidth, windowHeight, tower, UI);
+    UI.updateEnemyCounter();
     enemies = level.getEnemyArray();
 
     for (let i = 0; i < 1000; i++) {
@@ -28,6 +32,7 @@ function draw() {
         iteration++;
         spawnNewWave();
         targetedProjectiles.length = 0;
+        deadEnemyCounter = 0;
     }
 
     background(20);
@@ -105,8 +110,10 @@ function handleEnemies() {
         enemy.move(frameCount);
 
         if (enemy.isDead()) {
+            deadEnemyCounter++
             PlayerClass.increaseMoney(enemy.getValue());
             UI.updateMoney();
+            UI.updateEnemyCounter(deadEnemyCounter);
             enemies.splice(i, 1);
         }
     }

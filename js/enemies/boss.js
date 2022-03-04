@@ -1,10 +1,11 @@
 class Boss extends Enemy {
-    constructor(windowWidth, windowHeight, tower, index, UI, iteration, dmg, hp, value) {
-        super(windowWidth, windowHeight, tower, index, UI, iteration, dmg, hp, value);
+    constructor(stats, i) {
+        super(stats, i);
         this.r = 25;
         this.color = 'white';
-        this.value = value * 10;
-        this.hp = hp * 10;
+        this.value = stats.value * 10;
+        this.hp = stats.hp * 40;
         this.maxSpeed = 2;
+        this.offset = 1000;
     }
 }

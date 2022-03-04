@@ -1,26 +1,27 @@
 class Enemy {
-    constructor(windowWidth, windowHeight, tower, index, UI, iteration, dmg, hp, value) {
+    constructor(stats, i) {
         this.math = new Calculations();
         this.Helper = new Helper();
-        this.UI = UI;
-        this.index = index;
+        this.UI = stats.UI;
+        this.index = i;
         this.orderNumber;
-        this.iteration = iteration;
-        this.dmg = dmg;
-        this.hp = hp;
+        this.iteration = stats.iteration;
+        this.dmg = stats.dmg;
+        this.hp = stats.hp;
         this.vel = createVector();
         this.acc = createVector();
         this.as = 0.5;
-        this.tower = tower;
-        this.towerX = windowWidth / 2;
-        this.towerY = windowHeight / 2;
-        this.windowWidth = windowWidth;
-        this.windowHeight = windowHeight;
+        this.tower = stats.tower;
+        this.towerX = stats.windowWidth / 2;
+        this.towerY = stats.windowHeight / 2;
+        this.windowWidth = stats.windowWidth;
+        this.windowHeight = stats.windowHeight;
+        this.offset = 0;
         this.pos = this.createPos();
         this.towerPos = tower.getPosition();
         this.towerRange = tower.getRange();
         this.distanceToTower = this.getDistance();
-        this.value = value;
+        this.value = stats.value;
         this.color = 'blue';
         this.r = 5;
         this.maxSpeed = 3;
@@ -40,18 +41,20 @@ class Enemy {
 
     generateCoords() {
         return {
-            minX: random(-4000, -1000),
-            maxX: random(1000, 4000),
-            minY: random(-4000, 1000),
-            maxY: random(1000, 4000)
+            minX: random(-4000 + this.offset, -1000 + this.offset),
+            maxX: random(1000 - this.offset, 4000 - this.offset),
+            minY: random(-4000 + this.offset, 1000 - this.offset),
+            maxY: random(1000 - this.offset, 4000 - this.offset)
         };
     }
 
     show() {
+        push();
         stroke(this.color);
         fill(this.color);
         rectMode(CENTER);
         rect(this.pos.x, this.pos.y, this.r, this.r);
+        pop();
     }
 
     move() {
@@ -88,7 +91,7 @@ class Enemy {
     }
 
     calcTimeToTower() {
-        const t = this.getDistance() / this.maxSpeed;
+        const t = (this.getDistance() - (tower.getRange() / 2)) / this.maxSpeed;
         return t;
     }
 
